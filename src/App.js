@@ -2,6 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 import { Component } from 'react';
 
+// setTimeout -> depois de 5 segundos(5000) ele mostra
+
 class App extends Component{//componente de classe
   // Criando estado que manda renderizar quando ele mudar
   // constructor(props){
@@ -13,12 +15,8 @@ class App extends Component{//componente de classe
   //   };
   // }
   state = { //assim vc não precisa do construtor
-    // name: 'Kayene Teixeira',
-    // counter: 0
-    posts: [
-
-    ]
-  }
+    posts: []
+  };
 
   // handlePClick(){
   //   this.setState({name: "Caio"});
@@ -31,61 +29,66 @@ class App extends Component{//componente de classe
   // }
 
   componentDidMount(){ // assim que o componente for montado
-    // setTimeout(() => {
-      //   this.setState({
-      //   posts: [
-      //     {
-      //       id:1,
-      //       title: 'O título 1',
-      //       body: 'O corpo 1'
-      //     },
-      //     {
-      //       id:2,
-      //       title: 'O título 1',
-      //       body: 'O corpo 1'
-      //     },
-      //     {
-      //       id:3,
-      //       title: 'O título 1',
-      //       body: 'O corpo 1'
-      //     }
-      //   ]
-      // })
-      // }, 5000); //depois de 5 segundos ele mostra
-      
-          this.setState({
-          posts: [
-            {
-              id:1,
-              title: 'O título 1',
-              body: 'O corpo 1'
-            },
-            {
-              id:2,
-              title: 'O título 1',
-              body: 'O corpo 1'
-            },
-            {
-              id:3,
-              title: 'O título 1',
-              body: 'O corpo 1'
-            }
-          ]
-        })
-
+    // Preciso fazer uma chamada de uma api aqui
+    // fetch('https://jsonplaceholder.typicode.com/posts')
+    // .then(response => response.json()) // retorna uma promisse que retorna uma resposta, a gente converte pra json
+    // .then(posts => this.setState({posts})) //retorna a resposta já em json e seta
+    this.loadPosts();
   }
+
+  loadPosts = async () => {
+    // const postsResponse = fetch('https://jsonplaceholder.typicode.com/posts');
+
+    // // const [posts] = Promise.all([postsResponse])
+
+    // const postsJson = await posts.json();
+
+    // this.setState({posts: postsJson})
+
+    // fetch('https://jsonplaceholder.typicode.com/posts')
+    // .then(response => response.json()) // retorna uma promisse que retorna uma resposta, a gente converte pra json
+    // .then(posts => this.setState({posts}))
+
+    const photosResponse = fetch('https://jsonplaceholder.typicode.com/photos');
+    const postsResponse = fetch('https://jsonplaceholder.typicode.com/posts');
+
+    const [photos, posts] = await Promise.all([photosResponse, postsResponse]); //array de promessas
+
+    const photosJson = await photos.json(); // converte pra json
+    const postsJson = await posts.json();
+
+    const postsAndPhotos = postsJson.map((post, index) => {
+      return { ...post, cover: photosJson[index].url }
+    });
+    console.log(postsAndPhotos)
+
+    this.setState({posts: postsAndPhotos});
+  }
+
+  // componentDidUpdate(){ //toda vez q atualiza faz isso
+  // }
+
+  // componentWillUnmount(){ // quando um componente for desmontado, faz isso
+  // }
+
+  // Sempre seutiliza a palavra handle pq é tipico do react 
   
   render(){
     const {posts} = this.state;
     return (
-      <div className="App">
-        {posts.map(post => ( 
-          <div key={post.id}/*Serve pra melhorar a performance, indicando como único, ele vai direto e muda aquele elemento, ela deve estar no elemento root/> o pai */>
-            <h1>{post.title}</h1>
-            <h1>{post.body}</h1>
-          </div>
-        ))}
-      </div>
+      <section className='container'>
+        <div className="posts">
+          {posts.map(post => ( 
+            <div className='post'>
+              <img src={post.cover} alt={post.title}/>
+            <div key={post.id}/*Serve pra melhorar a performance, indicando como único, ele vai direto e muda aquele elemento, ela deve estar no elemento root/> o pai */ className='post-content'>
+              <h1>{post.title}</h1>
+              <p>{post.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     );
   }
 }
