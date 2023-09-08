@@ -1,7 +1,9 @@
 .container{
-  min-height: 100vh;
+  /* min-height: 100vh; ocupa o tamaho da tela toda */
   background-color: #eee;
   padding: 30px;
+  max-width: 1200px; /*faz ocupar um determinado espaço na horizontal*/
+  margin: 0 auto;/*faz ocupar o meio da tela*/
 }
 
 .posts{
@@ -14,6 +16,11 @@
   box-shadow: 6px 4px 8px rgb(198, 196, 196);
   background-color: white;
   border-radius: 2%;
+  transition: transform 150ms ease-in-out; /* isso configura uma transação suave*/
+}
+
+.post:hover{ /*permite aplicar estilos a um elemento quando o cursor do mouse está sobre ele*/
+  transform: scale(1.05); /*o elemento será aumentado de tamanho*/
 }
 
 .post-content{

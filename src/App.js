@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import { Component } from 'react';
+import { loadPosts } from './utils/load-posts';
+import { Posts } from './components/Posts';
 
 // setTimeout -> depois de 5 segundos(5000) ele mostra
 
@@ -28,12 +30,12 @@ class App extends Component{//componente de classe
   //   this.setState({counter: counter+1});
   // }
 
-  componentDidMount(){ // assim que o componente for montado
+  async componentDidMount(){ // assim que o componente for montado
     // Preciso fazer uma chamada de uma api aqui
     // fetch('https://jsonplaceholder.typicode.com/posts')
     // .then(response => response.json()) // retorna uma promisse que retorna uma resposta, a gente converte pra json
     // .then(posts => this.setState({posts})) //retorna a resposta já em json e seta
-    this.loadPosts();
+    await this.loadPosts();
   }
 
   loadPosts = async () => {
@@ -49,18 +51,7 @@ class App extends Component{//componente de classe
     // .then(response => response.json()) // retorna uma promisse que retorna uma resposta, a gente converte pra json
     // .then(posts => this.setState({posts}))
 
-    const photosResponse = fetch('https://jsonplaceholder.typicode.com/photos');
-    const postsResponse = fetch('https://jsonplaceholder.typicode.com/posts');
-
-    const [photos, posts] = await Promise.all([photosResponse, postsResponse]); //array de promessas
-
-    const photosJson = await photos.json(); // converte pra json
-    const postsJson = await posts.json();
-
-    const postsAndPhotos = postsJson.map((post, index) => {
-      return { ...post, cover: photosJson[index].url }
-    });
-    console.log(postsAndPhotos)
+    const postsAndPhotos = await loadPosts();
 
     this.setState({posts: postsAndPhotos});
   }
@@ -75,19 +66,10 @@ class App extends Component{//componente de classe
   
   render(){
     const {posts} = this.state;
+    
     return (
       <section className='container'>
-        <div className="posts">
-          {posts.map(post => ( 
-            <div className='post'>
-              <img src={post.cover} alt={post.title}/>
-            <div key={post.id}/*Serve pra melhorar a performance, indicando como único, ele vai direto e muda aquele elemento, ela deve estar no elemento root/> o pai */ className='post-content'>
-              <h1>{post.title}</h1>
-              <p>{post.body}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <Posts posts={posts}/>
       </section>
     );
   }
