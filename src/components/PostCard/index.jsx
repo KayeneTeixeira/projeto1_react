@@ -1,3 +1,4 @@
+import './style.css'
 // estamos separando os componentes é recomendado 
 // componentes são classes com o método render ou funções que retornam jsx 
 // as props são propriedades/atributos que eu passo para o meu componente, por exemplo este post q usaremos ({post.title})

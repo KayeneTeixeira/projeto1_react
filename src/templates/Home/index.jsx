@@ -1,12 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+
+import './style.css';
 import { Component } from 'react';
-import { loadPosts } from './utils/load-posts';
-import { Posts } from './components/Posts';
+import { loadPosts } from '../../utils/load-posts';
+import { Posts } from '../../components/Posts';
+import { Button } from '../../components/button';
 
 // setTimeout -> depois de 5 segundos(5000) ele mostra
 
-class App extends Component{//componente de classe
+class Home extends Component{//componente de classe
   // Criando estado que manda renderizar quando ele mudar
   // constructor(props){
   //   super(props);
@@ -17,7 +18,10 @@ class App extends Component{//componente de classe
   //   };
   // }
   state = { //assim vc não precisa do construtor
-    posts: []
+    posts: [],
+    allPosts: [],
+    page: 0,
+    postsPerPage: 20
   };
 
   // handlePClick(){
@@ -51,9 +55,28 @@ class App extends Component{//componente de classe
     // .then(response => response.json()) // retorna uma promisse que retorna uma resposta, a gente converte pra json
     // .then(posts => this.setState({posts}))
 
+    const {page, postsPerPage} = this.state;
     const postsAndPhotos = await loadPosts();
 
-    this.setState({posts: postsAndPhotos});
+    this.setState({
+      posts: postsAndPhotos.slice(page, postsPerPage), // paginação, tem uma quantidade de posts mas quando aperta  botao mostra mais 
+      allPosts: postsAndPhotos
+    });
+  }
+
+  loadMorePosts = () => {
+    const{
+      page,
+      postsPerPage,
+      allPosts,
+      posts
+    } = this.state;
+    const nextPage = page + postsPerPage
+
+    const nextPosts = allPosts.slice(nextPage, nextPage+postsPerPage)
+    posts.push(...nextPosts)//esses ... espalham os posts sem criar outro array;
+
+    this.setState({posts, page: nextPage})
   }
 
   // componentDidUpdate(){ //toda vez q atualiza faz isso
@@ -65,11 +88,21 @@ class App extends Component{//componente de classe
   // Sempre seutiliza a palavra handle pq é tipico do react 
   
   render(){
-    const {posts} = this.state;
+    const {posts, page, postsPerPage, allPosts} = this.state;
+
+    const noMorePosts = page+postsPerPage >= allPosts.length;
     
     return (
       <section className='container'>
         <Posts posts={posts}/>
+        <div class='button-container'>
+          <Button
+            text='Load more posts'
+            quandoClica = {this.loadMorePosts}// isso eu estou mandando um atributo, não a ação de clique
+            disabled={noMorePosts}
+          />
+        </div>
+        
       </section>
     );
   }
@@ -95,4 +128,4 @@ class App extends Component{//componente de classe
 //           </a>
 //         </header>
 
-export default App; //pra usar o componente fora deste arquivo
+export default Home; //pra usar o componente fora deste arquivo

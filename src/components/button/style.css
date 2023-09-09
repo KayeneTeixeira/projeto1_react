@@ -1,0 +1,17 @@
+.button{
+  width: 100%;
+  background: rgb(111, 111, 170);
+  color: white;
+  box-shadow: 2px 4px 5px rgb(159, 158, 158);
+  border-radius: 5px;
+  border: none;
+  padding: 15px 30px;
+  cursor: pointer; /*mãozinha ao colocar o mouse em cima do botão*/
+}
+
+.button:disabled{
+  background: rgb(204, 202, 202);
+  cursor: not-allowed;
+  color: black;
+  box-shadow: none;
+}

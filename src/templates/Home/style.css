@@ -1,0 +1,13 @@
+.container{
+  /* min-height: 100vh; ocupa o tamaho da tela toda */
+  background-color: #eee;
+  padding: 30px;
+  max-width: 1200px; /*faz ocupar um determinado espaço na horizontal*/
+  margin: 0 auto;/*faz ocupar o meio da tela*/
+}
+
+.button-container{
+  min-height: 60px;
+  display: flex;
+  align-items: flex-end;
+}
